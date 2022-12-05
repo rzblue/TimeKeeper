@@ -56,7 +56,7 @@ class StorageAPI:
         """Updates a user and returns the same user if the update is successful, or None
         if unsuccessful.
 
-        :param user: The user to update. This function will use the user's key to update the database, so don't modify the key.
+        :param user: The user to update. This function will use the user's id to update the database, so don't modify the id.
         :return: The updated user if successful, or None if unsuccessful
 
         """
@@ -65,7 +65,7 @@ class StorageAPI:
         cur = self.connection.cursor()
         try:
             cur.execute(
-                "UPDATE users SET name = ? id_string = ? WHERE id = ?",
+                "UPDATE users SET name = ?, id_string = ? WHERE id = ?",
                 (user.name, user.id_string, user.id),
             )
             self.connection.commit()
@@ -152,6 +152,17 @@ class StorageAPI:
         cur = self.connection.cursor()
         results = cur.execute(
             "SELECT * from time_sessions WHERE user_id = ? AND end_time IS NULL",
+            (user.id,),
+        )
+        sessions: list[TimeSession] = []
+        for record in results:
+            sessions.append(TimeSession.from_tuple(record))
+        return sessions
+
+    def get_completed_time_sessions_for_user(self, user: User):
+        cur = self.connection.cursor()
+        results = cur.execute(
+            "SELECT * from time_sessions WHERE user_id = ? AND end_time IS NOT NULL",
             (user.id,),
         )
         sessions: list[TimeSession] = []
