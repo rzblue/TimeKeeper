@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+bottle = "*"
+black = "*"
+pylint = "*"
+docformatter = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+format = "black ."
+formatdocs = "docformatter --in-place --recursive --config pyproject.toml ."
+lint = "pylint --recursive=y ."

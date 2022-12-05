@@ -1,0 +1,17 @@
+% rebase('components/template.html', title='Error')
+<div class="alert alert-danger">
+  <h2 class="text-danger">Error</h2>
+  <p>{{message}}</p>
+  <p id="countdown">Redirecting in </p>
+</div>
+
+<script>
+  var start = 5000
+  setTimeout(() => {
+      document.location.href = "{{redirect}}"
+  }, 5000)
+  setInterval(() => {
+      document.getElementById("countdown").innerText = "Redirecting in " + Math.ceil(start / 1000) + " seconds...";
+      start -= 100;
+  }, 100)
+</script>
