@@ -1,17 +1,18 @@
 import logging
+import os
 from datetime import datetime
 
-from bottle import Bottle, template, response, request, redirect
+from bottle import Bottle, template, response, request, redirect, static_file
 
 import loggers
 from database import StorageAPI
 
 loggers.setup_logger()
-logger = logging.getLogger()
+logger = logging.getLogger("app")
 
 app = Bottle()
 
-database = StorageAPI("database.sqlite")
+database = StorageAPI(os.getenv("DATABASE_FILE") or "database.sqlite")
 
 
 @app.route("/")
@@ -37,8 +38,24 @@ def handle_sign_in():
         return template(
             "error.html", message="User not found with that id", redirect="/sign-in"
         )
+    session = database.get_latest_active_time_session_for_user(user)
+    if session is None:
+        database.start_time_session(user)
+    else:
+        database.end_time_session(session)
+
     redirect("/sign-in")
     return ""
 
 
-app.run(reloader=True, host='0.0.0.0')
+@app.route("/create-user")
+def create_user_page():
+    return template("create-user.html")
+
+
+@app.route("/static/<filepath>")
+def callback(filepath):
+    return static_file(filepath, "./static")
+
+
+app.run(debug=True, reloader=True, host="0.0.0.0")
