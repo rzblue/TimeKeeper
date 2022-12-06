@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from bottle import Bottle, template, response, request, redirect, static_file
 
@@ -63,7 +63,22 @@ def handle_create_user():
 
 @app.route("/reports")
 def reports_page():
-    return template("reports.html")
+    users = database.get_all_users()
+    session_data: list[tuple[str, timedelta]] = []
+    for user in users:
+        total = timedelta()
+        sessions = database.get_completed_time_sessions_for_user(user)
+        for session in sessions:
+            total += session.total_time or timedelta()
+        session_data.append((user.name, total))
+    return template("reports.html", session_totals=session_data)
+
+
+@app.route("/sign-out-all")
+def handle_signout_all():
+    database.end_all_sessions()
+    redirect("/sign-in")
+    return ""
 
 
 @app.route("/static/<filepath>")

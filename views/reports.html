@@ -1,1 +1,20 @@
 % rebase('components/template.html', title='Reports')
+<div class="card">
+  <h2 class="card-title">User totals</h2>
+  <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Total Time</th>
+      </tr>
+      </thead>
+      <tbody>
+      % for (name, time) in session_totals:
+      <tr>
+        <td>{{name}}</td>
+        <td>{{time}}</td>
+      </tr>
+      % end
+      </tbody>
+    </table>
+</div>

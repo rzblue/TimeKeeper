@@ -20,8 +20,17 @@ class StorageAPI:
         return self.__db
 
     # USERS #
+
+    def get_all_users(self) -> list[User]:
+        cursor = self.connection.cursor()
+        results = self.connection.cursor().execute("""SELECT * FROM users""")
+        users: list[User] = []
+        for record in results:
+            users.append(User.from_tuple(record))
+        return users
+
     def get_user_by_id_string(self, id_string: str) -> NullableUser:
-        result = self.connection.execute(
+        result = self.connection.cursor().execute(
             "SELECT * FROM users WHERE id_string = ?", (id_string,)
         )
         data = result.fetchone()
