@@ -50,9 +50,3 @@ flowchart TD
     
     ER[Error! Warn user then redirect back.] --> AA
 ```
-
-```mermaid
-flowchart TD
-    A[*]
-```
-Algorithm to get 

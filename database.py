@@ -144,7 +144,9 @@ class StorageAPI:
         # Delegate to update
         return self.update_time_session(time_session)
 
-    def end_time_session_by_id(self, session_id: int, end_time: datetime = None) -> NullableTimeSession:
+    def end_time_session_by_id(
+        self, session_id: int, end_time: datetime = None
+    ) -> NullableTimeSession:
         """Ends the time session with the given id.
 
         Returns the ended TimeSession, or None if unsuccessful
