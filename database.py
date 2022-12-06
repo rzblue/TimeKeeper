@@ -13,6 +13,7 @@ class StorageAPI:
         self.__db = sqlite3.connect(
             file, detect_types=sqlite3.PARSE_COLNAMES | sqlite3.PARSE_DECLTYPES
         )
+        self.initialize_tables()
 
     @property
     def connection(self):
@@ -21,7 +22,7 @@ class StorageAPI:
     # USERS #
     def get_user_by_id_string(self, id_string: str) -> NullableUser:
         result = self.connection.execute(
-            "SELECT 1 FROM users WHERE id_string = ?", (id_string,)
+            "SELECT * FROM users WHERE id_string = ?", (id_string,)
         )
         data = result.fetchone()
         if data is None:
@@ -148,16 +149,25 @@ class StorageAPI:
             sessions.append(TimeSession.from_tuple(record))
         return sessions
 
-    def get_active_time_sessions_for_user(self, user: User):
+    def get_all_active_time_sessions_for_user(self, user: User):
         cur = self.connection.cursor()
         results = cur.execute(
-            "SELECT * from time_sessions WHERE user_id = ? AND end_time IS NULL",
+            """SELECT * from time_sessions WHERE user_id = ? 
+            AND start_time IS NOT NULL
+            AND end_time IS NULL
+            ORDER BY start_time DESC""",
             (user.id,),
         )
         sessions: list[TimeSession] = []
         for record in results:
             sessions.append(TimeSession.from_tuple(record))
         return sessions
+
+    def get_latest_active_time_session_for_user(self, user: User):
+        sessions = self.get_all_active_time_sessions_for_user(user)
+        if len(sessions) <= 0:
+            return None
+        return sessions[0]
 
     def get_completed_time_sessions_for_user(self, user: User):
         cur = self.connection.cursor()
