@@ -1,6 +1,7 @@
 % rebase('components/template.html', title='Reports')
 <div class="card">
   <h2 class="card-title">User totals</h2>
+  <h4 class="font-italic font-size-14 font-weight-light">Sorted by total time, descending</h4>
   <table class="table">
       <thead>
       <tr>
@@ -9,10 +10,17 @@
       </tr>
       </thead>
       <tbody>
-      % for (name, time) in session_totals:
+      % for (name, total_time) in session_totals:
+      <%
+      # Get the hours by dividing seconds by 3600
+      hours, rem = divmod(total_time.total_seconds(), 3600)
+      # Get the minutes by dividing the remaining seconds by 60
+      minutes, rem = divmod(rem, 60)
+      seconds = rem
+      %>
       <tr>
         <td>{{name}}</td>
-        <td>{{time}}</td>
+        <td>{{f"{int(hours)}H {int(minutes)}M {int(seconds)}S"}}</td>
       </tr>
       % end
       </tbody>

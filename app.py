@@ -6,8 +6,8 @@ from bottle import Bottle, template, response, request, redirect, static_file
 
 import loggers
 from database import StorageAPI
-from helpers import error_page
-from models import User
+from util import error_page
+from models import User, TimeSession
 
 loggers.setup_logger()
 logger = logging.getLogger("app")
@@ -24,11 +24,12 @@ def home():
 
 @app.route("/sign-in")
 def sign_in():
-    signed_in_users: list[tuple[str, datetime]] = []
+    signed_in_users: list[tuple[str, datetime, int]] = []
     active_sessions = database.get_active_sessions()
     for session in active_sessions:
-        user = database.get_user_by_key(session.user_id)
-        signed_in_users.append((user.name, session.start_time))
+        user = database.get_user_by_id(session.user_id)
+        # Display in 12 hour clock with AM/PM
+        signed_in_users.append((user.name, session.start_time, session.id))
 
     return template("sign-in.html", signed_in_users=signed_in_users)
 
@@ -71,6 +72,7 @@ def reports_page():
         for session in sessions:
             total += session.total_time or timedelta()
         session_data.append((user.name, total))
+    session_data.sort(reverse=True, key=lambda pair: pair[1].total_seconds())
     return template("reports.html", session_totals=session_data)
 
 
@@ -80,6 +82,12 @@ def handle_signout_all():
     redirect("/sign-in")
     return ""
 
+
+@app.route("/sign-out/<session_id>")
+def sign_out_one(session_id):
+    database.end_time_session_by_id(session_id)
+    redirect("/sign-in")
+    return ""
 
 @app.route("/static/<filepath>")
 def callback(filepath):

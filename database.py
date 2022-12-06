@@ -103,8 +103,8 @@ class StorageAPI:
     def end_time_session(
         self, time_session: TimeSession, end_time: datetime = None
     ) -> NullableTimeSession:
-        # Bail if id is empty
-        if not time_session.id:
+        time_session = self.get_time_session_by_id(time_session.id)
+        if time_session is None:
             return None
         # Bail if start_time isn't set - you can't finish an unstarted session
         if not time_session.start_time:
@@ -113,6 +113,19 @@ class StorageAPI:
             end_time = datetime.now()
         time_session.end_time = end_time
         # Delegate to update
+        return self.update_time_session(time_session)
+
+    def end_time_session_by_id(self, session_id: int, end_time: datetime = None) -> NullableTimeSession:
+        time_session = self.get_time_session_by_id(session_id)
+        if time_session is None:
+            logger.warning("Tried to end non-existent time session: ID %s", session_id)
+            return None
+        if time_session.has_ended:
+            logger.warning("Tried to end already ended time session: ID %s", session_id)
+            return None
+        if end_time is None:
+            end_time = datetime.now()
+        time_session.end_time = end_time
         return self.update_time_session(time_session)
 
     def update_time_session(self, time_session: TimeSession) -> TimeSession | None:
@@ -137,6 +150,14 @@ class StorageAPI:
             logger.warning("Did not update time session!")
             return None
         return time_session
+
+    def get_time_session_by_id(self, session_id: int) -> NullableTimeSession:
+        cur = self.connection.cursor()
+        results = cur.execute("SELECT * FROM time_sessions WHERE id = ?", (session_id,))
+        if results.arraysize <= 0:
+            return None
+        session_tuple = results.fetchone()
+        return TimeSession.from_tuple(session_tuple)
 
     def get_active_sessions(self) -> list[TimeSession]:
         cur = self.connection.cursor()

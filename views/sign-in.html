@@ -20,18 +20,20 @@
   <div class="card">
     <h2 class="card-title">Signed In Users</h2>
     <a href="/sign-out-all" class="btn btn-danger">Sign Everyone Out</a>
-    <table class="table">
+    <table class="table table-hover">
       <thead>
       <tr>
         <th scope="col">Name</th>
         <th scope="col">Time In</th>
+        <th class="text-right" scope="col">Sign out</th>
       </tr>
       </thead>
       <tbody>
-      % for (name, time_in) in signed_in_users:
+      % for (name, time_in, session_id) in signed_in_users:
       <tr>
         <td>{{name}}</td>
-        <td>{{time_in}}</td>
+        <td>{{time_in.strftime("%X %p")}}</td>
+        <td class="text-right"><a href="/sign-out/{{session_id}}" class="btn btn-action"><i class="fas fa-sign-out-alt"></i></a></td>
       </tr>
       % end
       </tbody>
