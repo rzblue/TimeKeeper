@@ -21,3 +21,12 @@ To seed the database with some starter data:
 ***This will delete all data in the database!***
 
 ```python reset_db_development.py```
+
+### Default users provided by `reset_development_db.py`
+
+| Name         | ID         |
+|--------------|------------|
+| John Smith   | 12345678   |
+| Tim Cook     | thisismyid |
+| Bill Gates   | qwerty     |
+| Bobby Tables | 987654321  |

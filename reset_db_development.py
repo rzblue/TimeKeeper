@@ -14,7 +14,7 @@ users = [
     User("John Smith", "12345678"),
     User("Tim Cook", "thisismyid"),
     User("Bill Gates", "qwerty"),
-    User("Bobby Tables", "987654321")
+    User("Bobby Tables", "987654321"),
 ]
 
 created_users = []
@@ -24,7 +24,11 @@ for user in users:
 now = datetime.now()
 for user in created_users:
     for i in range(4):
-        session = db.start_time_session(user, now - timedelta(seconds=random.randint(7200, 86400), days=2*i))
-        db.end_time_session(session, session.start_time + timedelta(seconds=random.randint(1800, 7200)))
+        session = db.start_time_session(
+            user, now - timedelta(seconds=random.randint(7200, 86400), days=2 * i)
+        )
+        db.end_time_session(
+            session, session.start_time + timedelta(seconds=random.randint(1800, 7200))
+        )
 
 db.connection.close()
