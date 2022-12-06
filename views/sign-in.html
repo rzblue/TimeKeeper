@@ -1,23 +1,39 @@
 % rebase('components/template.html', title='Clock In/Out')
-<form action="/sign-in" method="POST" class="form-group">
-  <label for="id-number">ID number:</label>
-  <input type="text" autofocus="autofocus" name="id_number" id="id-number" class="form-control">
-  <button type="submit" class="btn btn-primary">Sign In/Out</button>
-</form>
+<div>
 
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col">Name</th>
-    <th scope="col">Time In</th>
-  </tr>
-  </thead>
-  <tbody>
-    % for (name, time_in) in signed_in_users:
+  <div class="card">
+    <h2 class="card-title">Sign In/Out</h2>
+    <form action="/sign-in" method="POST" class="form-inline">
+      <div class="form-row row-eq-spacing-md flex-fill">
+        <div class="form-group col-sm-8 col-md-9 col-lg-10">
+          <label class="d-inline" for="id-number">ID number:</label>
+          <input type="text" autofocus="autofocus" name="id_number" id="id-number" class="form-control ">
+        </div>
+        <div class="col-sm-4 col-md-3 col-lg-2 form-group">
+          <button type="submit" class="btn btn-primary form-control m-5">Sign In/Out</button>
+        </div>
+      </div>
+    </form>
+    <a href="/create-user" class="btn btn-primary"><i class="fa fa-plus"></i> New User</a>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Signed In Users</h2>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Time In</th>
+      </tr>
+      </thead>
+      <tbody>
+      % for (name, time_in) in signed_in_users:
       <tr>
         <td>{{name}}</td>
         <td>{{time_in}}</td>
       </tr>
-    % end
-  </tbody>
-</table>
+      % end
+      </tbody>
+    </table>
+  </div>
+</div>

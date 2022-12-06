@@ -10,26 +10,21 @@
     <title>{{f"TimeKeeper - {title}"}}</title>
     % include('components/halfmoon.html')
 </head>
-<body class="with-custom-webkit-scrollbars" data-dm-shortcut-enabled="true">
+<body class="with-custom-webkit-scrollbars" data-dm-shortcut-enabled="true" data-set-preferred-mode-onload="true">
 <div class="page-wrapper with-navbar">
     <div class="sticky-alerts"></div>
     <nav class="navbar">
-        <div class="navbar-content">
-            <button class="btn btn-action" type="button">
-            <i class="fa fa-bars" aria-hidden="true"></i>
-            <span class="sr-only">Toggle sidebar</span> <!-- sr-only = show only on screen readers -->
-            </button>
-        </div>
         <a href="/" class="navbar-brand">TimeKeeper</a>
-
         <ul class="navbar-nav">
-            <li class="nav-item {{ 'active' if request.path == '/sign-in' else ''}}"><a class="nav-link" href="/sign-in">User Sign In/Out</a></li>
-
+            <li class="nav-item {{ 'active' if request.path == '/sign-in' else ''}}"><a class="nav-link" href="/sign-in">Sign In/Out</a></li>
+            <li class="nav-item {{ 'active' if request.path == '/reports' else ''}}"><a class="nav-link" href="/reports">Reports</a></li>
         </ul>
     </nav>
     <div class="sidebar"></div>
     <div class="content-wrapper">
-        {{!base}}
+        <div class="content ">
+            {{!base}}
+        </div>
     </div>
 </div>
 </body>
